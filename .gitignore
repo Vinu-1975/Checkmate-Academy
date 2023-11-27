@@ -1,0 +1,6 @@
+/data/games/*
+__pycache__/
+!.gitignore
+env/
+/lit/
+/data/
