@@ -5,8 +5,10 @@ import pygame_menu as pm
 
 from src.engine.engine import Engine
 # from tutorial.tut import Tutorial
+from src.puzzle.puzzle import Puzzle
 from src.tutorial.main import learn_chess
 from src.functions.fen import parse_FEN
+from src.puzzle.menu import puzzle_menu
 
 
 # from src.puzzles.puzzle_extract import print_extracts
@@ -24,21 +26,9 @@ def learn_chess_menu():
     learn_chess()
     
 
-def learn_rook():
-    # Implement rook learning functionality
-    pass
-
-def learn_bishop():
-    # Implement bishop learning functionality
-    pass
-
-def learn_pawn():
-    # Implement pawn learning functionality
-    pass
-
 def solve_puzzles():
     # Implement puzzle solving functionality
-    pass
+    puzzle_menu()
     
 
 

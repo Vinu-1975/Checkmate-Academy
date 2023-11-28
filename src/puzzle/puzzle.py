@@ -34,8 +34,8 @@ def print_eval(evaluation):
             return "Mate in " + str(evaluation["value"])
 
 
-class Engine:
-    def __init__(self):
+class Puzzle:
+    def __init__(self,puzzle_fen):
         self.puzzle_mode = False
         self.player_vs_ai = None
         self.ai_vs_ai = None
@@ -105,11 +105,8 @@ class Engine:
                     + "' is non respondent please install stockfish here: https://stockfishchess.org/download/"
                 )
                 sys.exit(0)
-        self.stockfish.set_fen_position(
-            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-        )
+        self.stockfish.set_fen_position(puzzle_fen)
         self.ai_strength = 0
-
         # self.engine_ = chess.engine.SimpleEngine.popen_uci('lit/stockfish/Windows/stockfish.exe')
         self.game = chess.pgn.Game()
 
@@ -156,7 +153,7 @@ class Engine:
             parent=self,
             theme=pm.themes.THEME_DARK,
         )
-        # "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+        # puzzle_fen
         icon = pg.image.load("data/img/pieces/cardinal/bk.png").convert_alpha()
         pg.display.set_icon(icon)
         (
@@ -166,8 +163,8 @@ class Engine:
             self.en_passant_square,
             self.halfmoves_since_last_capture,
             self.fullmove_number,
-        ) = parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-        self.game_fens = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+        ) = parse_FEN(puzzle_fen)
+        self.game_fens = [puzzle_fen]
         self.black_pieces = pg.sprite.Group()
         self.white_pieces = pg.sprite.Group()
         self.all_pieces = pg.sprite.Group()
@@ -769,13 +766,13 @@ class Engine:
         if not self.player_vs_ai and not self.ai_vs_ai and self.flip_enabled:
             self.flip_board()
 
-        if self.node.board().is_repetition():
-            if self.sound_enabled:
-                pg.mixer.music.load("data/sounds/mate.wav")
-                pg.mixer.music.play(1)
-                time.sleep(0.15)
-                pg.mixer.music.play(1)
-            self.end_game("DRAW BY REPETITION")
+        # if self.node.board().is_repetition():
+        #     if self.sound_enabled:
+        #         pg.mixer.music.load("data/sounds/mate.wav")
+        #         pg.mixer.music.play(1)
+        #         time.sleep(0.15)
+        #         pg.mixer.music.play(1)
+        #     self.end_game("DRAW BY REPETITION")
         elif self.node.board().is_stalemate():
             if self.sound_enabled:
                 pg.mixer.music.load("data/sounds/mate.wav")
