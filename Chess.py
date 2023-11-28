@@ -8,6 +8,7 @@ from src.engine.engine import Engine
 from src.puzzle.puzzle import Puzzle
 from src.tutorial.main import learn_chess
 from src.functions.fen import parse_FEN
+import navigation
 from src.puzzle.menu import puzzle_menu
 
 
@@ -52,4 +53,5 @@ def main_menu():
 
 
 if __name__ == "__main__":
+    navigation.open_main_menu = main_menu
     main_menu()

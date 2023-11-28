@@ -2,6 +2,7 @@
 from .tut import Tutorial
 import pygame as pg
 import pygame_menu as pm
+import navigation
 
 
 fen_list = {
@@ -32,7 +33,7 @@ def learn_chess():
     # ... Add more options as needed
 
     # Add a button to go back to the main menu
-    # learn_menu.add.button("Back to Main Menu", main_menu)
+    learn_menu.add.button("Back to Main Menu", navigation.open_main_menu)
 
     # Run the learn menu
     learn_menu.mainloop(learn_surface)
