@@ -35,8 +35,9 @@ def print_eval(evaluation):
             return "Mate in " + str(evaluation["value"])
 
 
-class Puzzle:
-    def __init__(self, puzzle_fen):
+class Engine2:
+    def __init__(self):
+        self.fun = 0
         self.puzzle_mode = False
         self.player_vs_ai = None
         self.ai_vs_ai = None
@@ -106,8 +107,11 @@ class Puzzle:
                     + "' is non respondent please install stockfish here: https://stockfishchess.org/download/"
                 )
                 sys.exit(0)
-        self.stockfish.set_fen_position(puzzle_fen)
+        self.stockfish.set_fen_position(
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+        )
         self.ai_strength = 0
+
         # self.engine_ = chess.engine.SimpleEngine.popen_uci('lit/stockfish/Windows/stockfish.exe')
         self.game = chess.pgn.Game()
 
@@ -154,7 +158,7 @@ class Puzzle:
             parent=self,
             theme=pm.themes.THEME_DARK,
         )
-        # puzzle_fen
+        # "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         icon = pg.image.load("data/img/pieces/cardinal/bk.png").convert_alpha()
         pg.display.set_icon(icon)
         (
@@ -164,8 +168,8 @@ class Puzzle:
             self.en_passant_square,
             self.halfmoves_since_last_capture,
             self.fullmove_number,
-        ) = parse_FEN(puzzle_fen)
-        self.game_fens = [puzzle_fen]
+        ) = parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        self.game_fens = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
         self.black_pieces = pg.sprite.Group()
         self.white_pieces = pg.sprite.Group()
         self.all_pieces = pg.sprite.Group()
@@ -374,7 +378,7 @@ class Puzzle:
         self.stockfish.set_depth(99)
         return eve
 
-    # @timeit
+    @timeit
     def un_click_left(self) -> None:
         """
         Left click release event logic. Calls make_move which makes a move if it is legal
@@ -412,7 +416,10 @@ class Puzzle:
                                     x = -x + 7
                                     y = -y + 7
                                 if self.turn == "w":
-                                    self.turn = "b"
+                                    self.fun += 1
+                                    if self.fun == 2:
+                                        self.turn = "b"
+                                        self.fun = 0
                                     move = translate_move(row, col, y, x)
                                     if self.board[row][col] != " ":
                                         if self.board[row][col].piece == "P":
@@ -424,7 +431,10 @@ class Puzzle:
                                     )
                                 else:
                                     self.fullmove_number += 1
-                                    self.turn = "w"
+                                    self.fun += 1
+                                    if self.fun == 2:
+                                        self.turn = "w"
+                                        self.fun = 0
                                     if not self.player_vs_ai:
                                         move = translate_move(row, col, y, x)
                                         if self.board[row][col] != " ":
@@ -449,6 +459,8 @@ class Puzzle:
                             else:
                                 self.board[row][col].clicked = False
                             break
+
+    # Rest of the game logic remains unchanged
 
     def change_pieces(self, piece_type: str) -> None:
         """
@@ -773,13 +785,13 @@ class Puzzle:
         if not self.player_vs_ai and not self.ai_vs_ai and self.flip_enabled:
             self.flip_board()
 
-        # if self.node.board().is_repetition():
-        #     if self.sound_enabled:
-        #         pg.mixer.music.load("data/sounds/mate.wav")
-        #         pg.mixer.music.play(1)
-        #         time.sleep(0.15)
-        #         pg.mixer.music.play(1)
-        #     self.end_game("DRAW BY REPETITION")
+        if self.node.board().is_repetition():
+            if self.sound_enabled:
+                pg.mixer.music.load("data/sounds/mate.wav")
+                pg.mixer.music.play(1)
+                time.sleep(0.15)
+                pg.mixer.music.play(1)
+            self.end_game("DRAW BY REPETITION")
         elif self.node.board().is_stalemate():
             if self.sound_enabled:
                 pg.mixer.music.load("data/sounds/mate.wav")

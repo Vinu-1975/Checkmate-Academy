@@ -17,10 +17,10 @@ fen_list = {
 def puzzle_menu():
     # Initialize Pygame and create a surface
     pg.init()
-    learn_surface = pg.display.set_mode((600, 400))
+    learn_surface = pg.display.set_mode((800,600))
 
     # Create a new Pygame Menu for learning options
-    learn_menu = pm.Menu("Chess Puzzles", 600, 400, theme=pm.themes.THEME_DARK)
+    learn_menu = pm.Menu("Chess Puzzles", 800,600, theme=pm.themes.THEME_DARK)
 
     # Add options for different chess pieces or topics
     learn_menu.add.button("I", lambda: puzzle("I"))

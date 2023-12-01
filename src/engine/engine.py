@@ -15,6 +15,10 @@ import chess.engine
 import chess.pgn
 import pygame_menu as pm
 import platform
+import navigation
+
+
+
 
 # "8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3" - can en passant out of check!
 # "rnb2k1r/pp1Pbppp/2p5/q7/2B5/8/PPPQNnPP/RNB1K2R w KQ - 3 9" - 39 moves can promote to other pieces
@@ -276,6 +280,9 @@ class Engine:
                         self.left = False
                     self.updates = False
                 elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_m:
+                        navigation.open_main_menu()
+                        return
                     if event.key == pg.K_s and pg.key.get_mods() & pg.KMOD_CTRL:
                         self.end_game("Game saved and Reset")
                     if event.key == pg.K_f and pg.key.get_mods() & pg.KMOD_CTRL:
@@ -308,7 +315,10 @@ class Engine:
                     ).convert()
                     self.background = pg.transform.smoothscale(
                         self.background,
-                        (pg.display.get_window_size()[0], pg.display.get_window_size()[1]),
+                        (
+                            pg.display.get_window_size()[0],
+                            pg.display.get_window_size()[1],
+                        ),
                     )
                     self.board_background = pg.image.load(
                         "data/img/boards/" + self.board_style
@@ -1221,7 +1231,7 @@ class Engine:
         Draw the board, with highlighted squares and last moves. Draw numbers on the sides of the board.
         :return: None
         """
-        
+
         self.screen.blit(self.background, (0, 0))
         self.screen.blit(self.board_background, (self.offset[0], self.offset[1]))
         square1 = None
@@ -1399,6 +1409,3 @@ class Engine:
 
     def flip_board(self):
         self.flipped = not self.flipped
-
-    
-    

@@ -9,12 +9,14 @@ import pygame as pg
 from src.functions.timer import *
 from src.pieces.queen import Queen
 from src.pieces.base import Piece
+
 # from stockfish import Stockfish
 import chess
 import chess.engine
 import chess.pgn
 import pygame_menu as pm
 import platform
+import navigation
 
 # "8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3" - can en passant out of check!
 # "rnb2k1r/pp1Pbppp/2p5/q7/2B5/8/PPPQNnPP/RNB1K2R w KQ - 3 9" - 39 moves can promote to other pieces
@@ -36,7 +38,7 @@ def print_eval(evaluation):
 
 
 class Tutorial:
-    def __init__(self,chosen_tut_fen):
+    def __init__(self, chosen_tut_fen):
         self.puzzle_mode = False
         self.player_vs_ai = None
         self.ai_vs_ai = None
@@ -53,12 +55,9 @@ class Tutorial:
         self.flipped = False
         self.flip_enabled = True
         self.sound_enabled = True
-        
 
         # self.engine_ = chess.engine.SimpleEngine.popen_uci('lit/stockfish/Windows/stockfish.exe')
         self.game = chess.pgn.Game()
-
-       
 
         self.piece_type = "chessmonk"
         self.board_style = "marble.png"
@@ -196,6 +195,9 @@ class Tutorial:
                         self.left = False
                     self.updates = False
                 elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_m:
+                        navigation.open_main_menu()
+                        return
                     if event.key == pg.K_s and pg.key.get_mods() & pg.KMOD_CTRL:
                         self.end_game("Game saved and Reset")
                     if event.key == pg.K_f and pg.key.get_mods() & pg.KMOD_CTRL:
@@ -229,7 +231,10 @@ class Tutorial:
                     ).convert()
                     self.background = pg.transform.smoothscale(
                         self.background,
-                        (pg.display.get_window_size()[0], pg.display.get_window_size()[1]),
+                        (
+                            pg.display.get_window_size()[0],
+                            pg.display.get_window_size()[1],
+                        ),
                     )
                     self.board_background = pg.image.load(
                         "data/img/boards/" + self.board_style
@@ -358,7 +363,7 @@ class Tutorial:
                                 if self.player_vs_ai:
                                     # self.ai_make_move(y, row, col)
                                     # if EVAL_ON:
-                                        # self.get_eval()
+                                    # self.get_eval()
                                     pass
                             else:
                                 self.board[row][col].clicked = False
@@ -455,10 +460,6 @@ class Tutorial:
         #     self.ai_vs_ai = False
         #     self.player_vs_ai = True
         pass
-
-
-
-
 
     def change_ai_strength(self, num: int) -> None:
         """
@@ -659,7 +660,7 @@ class Tutorial:
         #         pg.mixer.music.play(1)
         #         time.sleep(0.15)
         #         pg.mixer.music.play(1)
-            # self.end_game("INSUFFICIENT MATERIAL")
+        # self.end_game("INSUFFICIENT MATERIAL")
         # elif self.node.board().is_insufficient_material():
         #     if self.sound_enabled:
         #         pg.mixer.music.load("data/sounds/mate.wav")
@@ -673,10 +674,10 @@ class Tutorial:
         #         pg.mixer.music.play(1)
         #         time.sleep(0.15)
         #         pg.mixer.music.play(1)
-            # if self.node.board().outcome().winner:
-            #     self.end_game("CHECKMATE WHITE WINS !!")
-            # else:
-            #     self.end_game("CHECKMATE BLACK WINS !!")
+        # if self.node.board().outcome().winner:
+        #     self.end_game("CHECKMATE WHITE WINS !!")
+        # else:
+        #     self.end_game("CHECKMATE BLACK WINS !!")
         # pprint(self.board, indent=3)
 
     def end_game(self, end_text: str) -> None:
@@ -838,7 +839,7 @@ class Tutorial:
         castle = []
         in_check = False
         print(self.all_pieces)
-        
+
         for piece in self.all_pieces:
             if piece.piece.lower() == "k":
                 if not piece.has_moved:
@@ -1106,7 +1107,7 @@ class Tutorial:
         Draw the board, with highlighted squares and last moves. Draw numbers on the sides of the board.
         :return: None
         """
-        
+
         self.screen.blit(self.background, (0, 0))
         self.screen.blit(self.board_background, (self.offset[0], self.offset[1]))
         square1 = None
@@ -1285,6 +1286,3 @@ class Tutorial:
 
     def flip_board(self):
         self.flipped = not self.flipped
-
-    
-    
